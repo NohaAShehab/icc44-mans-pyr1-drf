@@ -123,3 +123,27 @@ def index(request):
         students = Student.get_all_students()  # query set of model objects
         serlized_students = StudentSerializer(students, many=True)
         return Response({"message": "students data receieved", 'students': serlized_students.data})
+
+
+
+
+### operations on specific object
+
+@api_view(['GET', 'DELETE', 'PUT'])
+def student_resource(request, id):
+    student = Student.objects.filter(id=id).first()
+    if request.method=='GET':
+        student = Student.objects.filter(id=id).first()
+        serlized_student = StudentSerializer(student)
+        return Response({'data':serlized_student.data}, status=200)
+
+    elif request.method=='DELETE':
+        student.delete()
+        return Response({"message":"object deleted"}, status= 204)
+
+    elif request.method=="PUT":
+        serlized_student = StudentSerializer(instance=student,data=request.data)
+        if serlized_student.is_valid():
+            serlized_student.save()
+            return Response({"messsage": 'object add received', "student": serlized_student.data}, status=201)
+        return Response(serlized_student.errors, status=400)
