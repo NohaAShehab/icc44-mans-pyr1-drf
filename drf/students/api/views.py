@@ -87,21 +87,39 @@ def acceptData(request):
 #     return Response({"message": "students data receieved", 'students': serlized_students})
 
 
+# @api_view(['GET', 'POST'])
+# def index(request):
+#     if request.method == 'POST':
+#         request_data = request.data
+#         print(request_data) # dict
+#         student = Student.objects.create(**request_data)
+#         serlized_student = StudentSerializer(student).data
+#         return Response({"messsage": 'object add received', 'student':serlized_student}, status=201)
+#
+#     elif request.method=='GET':
+#         students = Student.get_all_students()  # query set of model objects
+#         serlized_students = []
+#         for std in students:
+#             serialized_student = StudentSerializer(std).data
+#             print(serialized_student)
+#             serlized_students.append(serialized_student)
+#
+#     return Response({"message": "students data receieved", 'students': serlized_students})
+
+
+
+
+
 @api_view(['GET', 'POST'])
 def index(request):
     if request.method == 'POST':
-        request_data = request.data
-        print(request_data) # dict
-        student = Student.objects.create(**request_data)
-        serlized_student = StudentSerializer(student).data
-        return Response({"messsage": 'object add received', 'student':serlized_student}, status=201)
+        student = StudentSerializer(data=request.data)
+        if student.is_valid():
+            student.save()
+            return Response({"messsage": 'object add received', "student":student.data}, status=201)
+        return Response(student.errors, status=400)
 
     elif request.method=='GET':
         students = Student.get_all_students()  # query set of model objects
-        serlized_students = []
-        for std in students:
-            serialized_student = StudentSerializer(std).data
-            print(serialized_student)
-            serlized_students.append(serialized_student)
-
-    return Response({"message": "students data receieved", 'students': serlized_students})
+        serlized_students = StudentSerializer(students, many=True)
+        return Response({"message": "students data receieved", 'students': serlized_students.data})
