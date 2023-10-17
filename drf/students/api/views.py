@@ -3,9 +3,10 @@
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.viewsets import ModelViewSet
 
 from students.models import Student
-from students.api.serializers import StudentSerializer
+from students.api.serializers import StudentSerializer, StudentModelSerializer
 
 
 # you need to tell the view that is a drf view
@@ -107,24 +108,19 @@ def acceptData(request):
 #     return Response({"message": "students data receieved", 'students': serlized_students})
 
 
-
-
-
 @api_view(['GET', 'POST'])
 def index(request):
     if request.method == 'POST':
         student = StudentSerializer(data=request.data)
         if student.is_valid():
             student.save()
-            return Response({"messsage": 'object add received', "student":student.data}, status=201)
+            return Response({"messsage": 'object add received', "student": student.data}, status=201)
         return Response(student.errors, status=400)
 
-    elif request.method=='GET':
+    elif request.method == 'GET':
         students = Student.get_all_students()  # query set of model objects
         serlized_students = StudentSerializer(students, many=True)
         return Response({"message": "students data receieved", 'students': serlized_students.data})
-
-
 
 
 ### operations on specific object
@@ -132,18 +128,23 @@ def index(request):
 @api_view(['GET', 'DELETE', 'PUT'])
 def student_resource(request, id):
     student = Student.objects.filter(id=id).first()
-    if request.method=='GET':
+    if request.method == 'GET':
         student = Student.objects.filter(id=id).first()
         serlized_student = StudentSerializer(student)
-        return Response({'data':serlized_student.data}, status=200)
+        return Response({'data': serlized_student.data}, status=200)
 
-    elif request.method=='DELETE':
+    elif request.method == 'DELETE':
         student.delete()
-        return Response({"message":"object deleted"}, status= 204)
+        return Response({"message": "object deleted"}, status=204)
 
-    elif request.method=="PUT":
-        serlized_student = StudentSerializer(instance=student,data=request.data)
+    elif request.method == "PUT":
+        serlized_student = StudentSerializer(instance=student, data=request.data)
         if serlized_student.is_valid():
             serlized_student.save()
             return Response({"messsage": 'object add received', "student": serlized_student.data}, status=201)
         return Response(serlized_student.errors, status=400)
+
+
+class StudentModelViewSet(ModelViewSet):
+    serializer_class = StudentModelSerializer
+    queryset = Student.get_all_students()

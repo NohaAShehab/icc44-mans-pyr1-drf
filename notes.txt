@@ -1,0 +1,23 @@
+
+
+cors
+
+https://pypi.org/project/django-cors-headers/
+
+
+
+authenticate apis
+
+local storage vs cookies
+
+https://github.com/jazzband/djangorestframework-simplejwt
+https://django-rest-framework-simplejwt.readthedocs.io/en/latest/
+
+
+deploy backend
+https://help.pythonanywhere.com/pages/DeployExistingDjangoProject/
+
+
+https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site
+
+https://vercel.com/
