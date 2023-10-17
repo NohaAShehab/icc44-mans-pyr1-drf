@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'students.apps.StudentsConfig',
     'rest_framework',
     'django_cleanup.apps.CleanupConfig',
+    'tracks.apps.TracksConfig'
 
 ]
 
